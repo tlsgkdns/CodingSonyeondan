@@ -1,12 +1,13 @@
-package com.example.codingsonyeondan.songs.service
+package com.example.codingsonyeondan.domain.songs.service
 
 import com.example.codingsonyeondan.domain.album.repository.AlbumRepository
-import com.example.codingsonyeondan.songs.Song
-import com.example.codingsonyeondan.songs.repository.SongRepository
+import com.example.codingsonyeondan.domain.songs.Song
+import com.example.codingsonyeondan.domain.songs.repository.SongRepository
 import org.springframework.stereotype.Service
 
 @Service
-class SongServiceImpl(private val songRepository: SongRepository, private val albumRepository: AlbumRepository) : SongService {
+class SongServiceImpl(private val songRepository: SongRepository, private val albumRepository: AlbumRepository) :
+    SongService {
 
     override fun createSong(albumId: Long, song: Song): Song {
         val album = albumRepository.findById(albumId)

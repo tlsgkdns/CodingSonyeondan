@@ -1,4 +1,4 @@
-package com.example.codingsonyeondan.songs
+package com.example.codingsonyeondan.domain.songs
 
 import com.example.codingsonyeondan.domain.album.model.Album
 import jakarta.persistence.*
