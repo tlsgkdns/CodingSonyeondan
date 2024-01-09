@@ -1,0 +1,19 @@
+spring:
+ datasource:
+  url: jdbc:postgresql://db.nonasptvafkucldegyvj.supabase.co:5432/postgres
+  username: postgres
+  password: 4SlyaVrRHGjU3b3z
+ jpa:
+  properties:
+   hibernate:
+    format_sql: true
+    highlight_sql: true
+    use_sql_comments: true
+logging:
+ level:
+  org:
+   hibernate:
+    SQL: debug
+    orm:
+     jdbc:
+      bind: trace
