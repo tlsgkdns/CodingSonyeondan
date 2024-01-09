@@ -1,4 +1,6 @@
-package com.example.codingsonyeondan.songs
+package com.example.codingsonyeondan.songs.service
+
+import com.example.codingsonyeondan.songs.Song
 
 interface SongService {
     fun createSong(albumId: Long, song: Song): Song

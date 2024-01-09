@@ -1,5 +1,7 @@
-package com.example.codingsonyeondan.songs
+package com.example.codingsonyeondan.songs.controller
 
+import com.example.codingsonyeondan.songs.Song
+import com.example.codingsonyeondan.songs.service.SongService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.http.HttpStatus
