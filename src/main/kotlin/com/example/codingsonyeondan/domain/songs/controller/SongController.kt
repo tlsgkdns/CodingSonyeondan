@@ -1,6 +1,8 @@
 package com.example.codingsonyeondan.domain.songs.controller
 
 import com.example.codingsonyeondan.domain.songs.Song
+import com.example.codingsonyeondan.domain.songs.dto.SongCreateDTO
+import com.example.codingsonyeondan.domain.songs.dto.SongUpdateDTO
 import com.example.codingsonyeondan.domain.songs.service.SongService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -11,14 +13,14 @@ import org.springframework.http.HttpStatus
 class SongController(private val songService: SongService) {
 
     @PostMapping("/{albumId}/song")
-    fun createSong(@PathVariable albumId: Long, @RequestBody song: Song): ResponseEntity<String> {
-        songService.createSong(albumId, song)
+    fun createSong(@PathVariable albumId: Long, @RequestBody songCreateDTO: SongCreateDTO): ResponseEntity<String> {
+        songService.createSong(albumId, songCreateDTO)
         return ResponseEntity.ok("곡을 생성하였습니다.")
     }
 
     @PutMapping("/{albumId}/song/{songId}")
-    fun updateSong(@PathVariable albumId: Long, @PathVariable songId: Long, @RequestBody song: Song): ResponseEntity<String> {
-        songService.updateSong(albumId, songId, song)
+    fun updateSong(@PathVariable albumId: Long, @PathVariable songId: Long, @RequestBody songUpdateDTO: SongUpdateDTO): ResponseEntity<String> {
+        songService.updateSong(albumId, songId, songUpdateDTO)
         return ResponseEntity.ok("곡을 수정하였습니다.")
     }
 
