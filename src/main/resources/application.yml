@@ -17,3 +17,7 @@ logging:
         orm:
           jdbc:
             bind: trace
+org:
+  example:
+    upload:
+      path: F:\BootCamp\TeamProject\CodingSoneyondan\src\main\resources\upload

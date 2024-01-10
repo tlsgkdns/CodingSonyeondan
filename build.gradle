@@ -8,6 +8,9 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.jpa' version '1.9.21'
 }
 
+allOpen{
+    annotation("com.example.codingsonyeondan.infra.annotation.AllOpen")
+}
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 

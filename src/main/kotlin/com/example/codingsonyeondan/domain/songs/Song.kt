@@ -21,6 +21,6 @@ data class Song(
     var link: String,
 
     @ManyToOne
-    @JoinColumn(name = "album_id", nullable = false)
+    @JoinColumn(name = "album", nullable = false)
     var album: Album? = null
 )
