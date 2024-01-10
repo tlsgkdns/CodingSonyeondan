@@ -11,6 +11,9 @@ data class Song(
     @Column(name = "id")
     val id: Long = 0,
 
+    @Column(name = "title")
+    var title: String,
+
     @Column(name = "composer")
     var composer: String,
 
