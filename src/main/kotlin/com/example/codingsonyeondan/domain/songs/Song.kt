@@ -1,6 +1,7 @@
 package com.example.codingsonyeondan.domain.songs
 
 import com.example.codingsonyeondan.domain.album.model.Album
+import com.example.codingsonyeondan.domain.songs.dto.SongDTO
 import jakarta.persistence.*
 
 @Entity
@@ -26,4 +27,16 @@ data class Song(
     @ManyToOne
     @JoinColumn(name = "album_id", nullable = false)
     var album: Album? = null
-)
+){
+    companion object {
+        fun toDto(song: Song): SongDTO {
+            return SongDTO(
+                id = song.id,
+                title = song.title,
+                composer = song.composer,
+                lyrics = song.lyrics,
+                link = song.link,
+            )
+        }
+    }
+}
