@@ -7,4 +7,7 @@ import java.util.*
 
 interface SongRepository : JpaRepository<Song, Long> {
     fun existsByTitle(title: String): Boolean
+    fun findByAlbumId(albumId: Long): List<Song>
+    fun findByAlbumIdAndId(albumId: Long, songId: Long): Song?
+
 }

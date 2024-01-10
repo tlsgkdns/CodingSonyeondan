@@ -34,6 +34,7 @@ class AlbumServiceImpl(
     override fun getAlbum(albumId: Long): AlbumDTO {
         return AlbumDTO.from(getValidateAlbum(albumId));
     }
+
     @Transactional
     override fun createAlbum(albumCreateDTO: AlbumCreateDTO, image: MultipartFile?): AlbumDTO {
         checkTitleIsAlreadyExist(albumCreateDTO.title)

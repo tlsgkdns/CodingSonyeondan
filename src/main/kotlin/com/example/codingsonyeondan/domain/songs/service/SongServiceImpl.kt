@@ -24,13 +24,11 @@ class SongServiceImpl(
             throw UniqueAttributeAlreadyExistException("song", "title", title)
     }
     override fun getSong(albumId: Long, songId: Long): SongDTO? {
-        return SongDTO.from(getValidateSong(songId))
+        return songRepository.findByAlbumIdAndId(albumId, songId)?.let { SongDTO.from(it) }
     }
-
     override fun getSongs(albumId: Long): List<SongDTO> {
-        TODO("Not yet implemented")
+        return songRepository.findByAlbumId(albumId).map { SongDTO.from(it) }
     }
-
     @Transactional
     override fun createSong(albumId: Long, songCreateDTO: SongCreateDTO): SongDTO {
         checkTitleIsAlreadyExist(songCreateDTO.title)
@@ -48,7 +46,8 @@ class SongServiceImpl(
         song.lyrics = songModifyDTO.lyrics
         song.link = songModifyDTO.link
         songRepository.save(song)
-        return TODO("반환 값을 제공하세요")
+
+        return Song.toDto(song)
     }
     @Transactional
     override fun deleteSong(albumId: Long, songId: Long) {
