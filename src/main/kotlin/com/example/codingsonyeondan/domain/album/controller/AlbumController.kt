@@ -21,7 +21,7 @@ class AlbumController(
         return ResponseEntity.ok(albumService.getAlbum(albumId))
     }
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun createAlbum(@RequestPart(required = false) image: MultipartFile,
+    fun createAlbum(@RequestPart(required = false) image: MultipartFile?,
                     @RequestPart albumCreateDTO: AlbumCreateDTO)
     : ResponseEntity<AlbumDTO>
     {
