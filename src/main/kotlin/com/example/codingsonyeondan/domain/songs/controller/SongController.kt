@@ -21,15 +21,25 @@ class SongController(private val songService: SongService) {
     }
 
     @PutMapping("/{albumId}/song/{songId}",produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun updateSong(@PathVariable albumId: Long, @PathVariable songId: Long, @RequestBody songUpdateDTO: SongUpdateDTO): ResponseEntity<SongUpdateDTO> {
-        songService.updateSong(albumId, songId, songUpdateDTO)
-        return ResponseEntity.ok(songUpdateDTO)
+    fun updateSong(@PathVariable albumId: Long, @PathVariable songId: Long, @RequestBody songUpdateDTO: SongUpdateDTO): ResponseEntity<out Any> {
+        val song = songService.getSong(albumId, songId)
+        return if (song != null) {
+            songService.updateSong(albumId, songId, songUpdateDTO)
+            ResponseEntity.ok(songUpdateDTO)
+        } else {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("message" to "존재하지 않는 곡입니다."))
+        }
     }
 
-    @DeleteMapping("/{albumId}/song/{songId}",produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun deleteSong(@PathVariable albumId: Long, @PathVariable songId: Long): ResponseEntity<Map<String, String>> {
-        songService.deleteSong(albumId, songId)
-        return ResponseEntity.ok(mapOf("message" to "곡을 삭제하였습니다."))
+    @DeleteMapping("/{albumId}/song/{songId}", produces = [MediaType.TEXT_PLAIN_VALUE])
+    fun deleteSong(@PathVariable albumId: Long, @PathVariable songId: Long): ResponseEntity<out Any> {
+        val song = songService.getSong(albumId, songId)
+        return if (song != null) {
+            songService.deleteSong(albumId, songId)
+            ResponseEntity.ok(mapOf("message" to "곡을 삭제하였습니다."))
+        } else {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 곡입니다.")
+        }
     }
 
     @GetMapping("/{albumId}/song/{songId}",produces = [MediaType.APPLICATION_JSON_VALUE])
