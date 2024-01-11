@@ -36,26 +36,25 @@ class AlbumServiceImpl(
     }
 
     @Transactional
-    override fun createAlbum(albumCreateDTO: AlbumCreateDTO, image: MultipartFile?): AlbumDTO {
+    override fun createAlbum(albumCreateDTO: AlbumCreateDTO, imageFile: MultipartFile?): AlbumDTO {
         checkTitleIsAlreadyExist(albumCreateDTO.title)
-        val album = Album(
+        return AlbumDTO.from(albumRepository.save(Album(
             title = albumCreateDTO.title,
             artist = albumCreateDTO.artist,
-            releasedDate = albumCreateDTO.releasedDate
-        )
-        if(image != null)
-        {
-            val img = imageService.uploadImage(UploadFileDTO(image))
-            album.albumImage = img.to()
-        }
-        return AlbumDTO.from(albumRepository.save(album))
+            releasedDate = albumCreateDTO.releasedDate,
+            albumImage = imageFile?.let { imageService.uploadImage(UploadFileDTO(it)).to() }
+        )))
     }
     @Transactional
-    override fun modifyAlbum(albumId: Long, albumModifyDTO: AlbumModifyDTO): AlbumDTO {
+    override fun modifyAlbum(albumId: Long, imageFile: MultipartFile?, albumModifyDTO: AlbumModifyDTO): AlbumDTO {
         checkTitleIsAlreadyExist(albumModifyDTO.title)
-        getValidateAlbum(albumId)
+        val albumImage = albumRepository.findByIdOrNull(albumId)?.albumImage
         return AlbumDTO.from(albumRepository.save(Album(albumId, albumModifyDTO.title,
-            albumModifyDTO.artist, albumModifyDTO.releasedDate)))
+            albumModifyDTO.artist, albumModifyDTO.releasedDate,
+            imageFile?.let { albumImage?.apply { imageService.deleteImage(this.uuid) };
+                                    imageService.uploadImage(UploadFileDTO(it)).to() }
+                ?: albumImage
+            )))
     }
     @Transactional
     override fun deleteAlbum(albumId: Long) {

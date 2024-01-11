@@ -17,7 +17,7 @@ class SongServiceImpl(
     private val songRepository: SongRepository): SongService {
 
     private fun getValidateSong(songId: Long): Song {
-        return songRepository.findByIdOrNull(songId) ?: throw ModelNotFoundException("Song", songId)
+        return songRepository.findByIdOrNull(songId) ?: throw ModelNotFoundException("Song", songId.toString())
     }
     private fun checkTitleIsAlreadyExist(title: String) {
         if(songRepository.existsByTitle(title))
@@ -46,7 +46,6 @@ class SongServiceImpl(
         song.lyrics = songModifyDTO.lyrics
         song.link = songModifyDTO.link
         songRepository.save(song)
-
         return Song.toDto(song)
     }
     @Transactional

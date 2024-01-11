@@ -16,10 +16,7 @@ data class Album(
     val artist: String,
     @Column(name = "released_date")
     val releasedDate: LocalDateTime,
-
-)
-{
     @OneToOne(cascade = [CascadeType.ALL], fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "albumimage")
     var albumImage: Image? = null
-}
+)

@@ -4,7 +4,6 @@ import com.example.codingsonyeondan.infra.annotation.AllOpen
 import jakarta.persistence.*
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "image")
 @AllOpen
 class Image(

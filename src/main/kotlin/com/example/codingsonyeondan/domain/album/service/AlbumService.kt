@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile
 interface AlbumService {
 
     fun getAlbum(albumId: Long): AlbumDTO
-    fun createAlbum(albumCreateDTO: AlbumCreateDTO, image: MultipartFile?) : AlbumDTO
-    fun modifyAlbum(albumId: Long, albumModifyDTO: AlbumModifyDTO) : AlbumDTO
+    fun createAlbum(albumCreateDTO: AlbumCreateDTO, imageFile: MultipartFile?) : AlbumDTO
+    fun modifyAlbum(albumId: Long, imageFile: MultipartFile?, albumModifyDTO: AlbumModifyDTO) : AlbumDTO
     fun deleteAlbum(albumId: Long)
 }
