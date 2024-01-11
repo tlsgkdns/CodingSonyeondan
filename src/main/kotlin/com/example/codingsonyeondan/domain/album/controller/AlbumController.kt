@@ -4,9 +4,12 @@ import com.example.codingsonyeondan.domain.album.dto.AlbumCreateDTO
 import com.example.codingsonyeondan.domain.album.dto.AlbumDTO
 import com.example.codingsonyeondan.domain.album.dto.AlbumModifyDTO
 import com.example.codingsonyeondan.domain.album.service.AlbumService
+import com.example.codingsonyeondan.infra.exception.InvalidDTOError
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 
@@ -22,16 +25,17 @@ class AlbumController(
     }
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun createAlbum(@RequestPart(required = false) image: MultipartFile?,
-                    @RequestPart albumCreateDTO: AlbumCreateDTO)
+                    @RequestPart @Valid albumCreateDTO: AlbumCreateDTO, bindingResult: BindingResult)
     : ResponseEntity<AlbumDTO>
     {
+        if(bindingResult.hasErrors()) throw InvalidDTOError("AlbumCreateDTO", bindingResult.fieldError?.defaultMessage ?: "")
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(albumService.createAlbum(albumCreateDTO, image))
     }
     @PutMapping("/{albumId}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun modifyAlbum(@PathVariable albumId: Long,
                     @RequestPart(required = false) image: MultipartFile?,
-                    @RequestPart albumModifyDTO: AlbumModifyDTO): ResponseEntity<AlbumDTO>
+                    @RequestPart @Valid albumModifyDTO: AlbumModifyDTO): ResponseEntity<AlbumDTO>
     {
         return ResponseEntity.ok(albumService.modifyAlbum(albumId, image, albumModifyDTO))
     }

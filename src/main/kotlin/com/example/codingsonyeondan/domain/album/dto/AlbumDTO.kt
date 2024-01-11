@@ -1,6 +1,7 @@
 package com.example.codingsonyeondan.domain.album.dto
 
 import com.example.codingsonyeondan.domain.album.model.Album
+import org.hibernate.validator.constraints.Length
 import java.time.LocalDateTime
 import java.util.*
 
