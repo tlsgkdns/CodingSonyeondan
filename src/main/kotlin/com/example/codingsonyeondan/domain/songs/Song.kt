@@ -24,9 +24,9 @@ data class Song(
     @Column(name = "link")
     var link: String,
 
-    @ManyToOne
-    @JoinColumn(name = "album", nullable = false)
-    var album: Album? = null
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "album_id")
+    var album: Album
 ){
     companion object {
         fun toDto(song: Song): SongDTO {

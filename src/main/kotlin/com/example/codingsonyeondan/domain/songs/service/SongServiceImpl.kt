@@ -1,5 +1,6 @@
 package com.example.codingsonyeondan.domain.songs.service
 
+import com.example.codingsonyeondan.domain.album.repository.AlbumRepository
 import com.example.codingsonyeondan.domain.songs.Song
 import com.example.codingsonyeondan.domain.songs.dto.SongCreateDTO
 import com.example.codingsonyeondan.domain.songs.dto.SongDTO
@@ -12,9 +13,12 @@ import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
+
 @Service
 class SongServiceImpl(
-    private val songRepository: SongRepository): SongService {
+    private val songRepository: SongRepository,
+    private val albumRepository: AlbumRepository
+): SongService {
 
     private fun getValidateSong(songId: Long): Song {
         return songRepository.findByIdOrNull(songId) ?: throw ModelNotFoundException("Song", songId.toString())
@@ -31,12 +35,18 @@ class SongServiceImpl(
     }
     @Transactional
     override fun createSong(albumId: Long, songCreateDTO: SongCreateDTO): SongDTO {
+        val album = albumRepository.findById(albumId)
+            .orElseThrow { throw IllegalArgumentException("존재하지 않는 앨범입니다.") }
+
         checkTitleIsAlreadyExist(songCreateDTO.title)
         return SongDTO.from(songRepository.save(
-            Song(title = songCreateDTO.title,
+            Song(
+                title = songCreateDTO.title,
                 composer = songCreateDTO.composer,
                 lyrics = songCreateDTO.lyrics,
-                link = songCreateDTO.link)
+                link = songCreateDTO.link,
+                album = album
+            )
         ))
     }
     override fun updateSong(albumId: Long, songId: Long, songModifyDTO: SongUpdateDTO): SongDTO {
@@ -53,4 +63,6 @@ class SongServiceImpl(
         println(getValidateSong(songId).title)
         return songRepository.delete(getValidateSong(songId))
     }
+
+
 }
