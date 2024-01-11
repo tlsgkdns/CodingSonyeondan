@@ -18,8 +18,7 @@ import org.springframework.web.multipart.MultipartFile
 @Service
 class AlbumServiceImpl(
     private val albumRepository: AlbumRepository,
-    private val imageService: ImageService,
-    private val imageRepository: ImageRepository
+    private val imageService: ImageService
 ): AlbumService {
 
     private fun getValidateAlbum(albumId: Long): Album
@@ -58,7 +57,8 @@ class AlbumServiceImpl(
     }
     @Transactional
     override fun deleteAlbum(albumId: Long) {
-        println(getValidateAlbum(albumId).title)
-        return albumRepository.delete(getValidateAlbum(albumId))
+        val album = getValidateAlbum(albumId)
+        album.albumImage?.let { imageService.deleteImage(it.uuid) }
+        return albumRepository.delete(album)
     }
 }
