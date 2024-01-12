@@ -2,6 +2,7 @@ package com.example.codingsonyeondan.infra.exception.handler
 
 import com.example.codingsonyeondan.infra.exception.ModelNotFoundException
 import com.example.codingsonyeondan.infra.exception.NoImageException
+import com.example.codingsonyeondan.infra.exception.NotHaveAuthorityException
 import com.example.codingsonyeondan.infra.exception.UniqueAttributeAlreadyExistException
 import com.example.codingsonyeondan.infra.exception.dto.ErrorDTO
 import org.springframework.boot.Banner.Mode
@@ -34,6 +35,14 @@ class GlobalExceptionHandler {
     {
         return ResponseEntity
             .status(HttpStatus.NO_CONTENT)
+            .body(ErrorDTO(e.message))
+    }
+
+    @ExceptionHandler(NotHaveAuthorityException::class)
+    fun handleNotHaveAuthorityException(e: NotHaveAuthorityException): ResponseEntity<ErrorDTO>
+    {
+        return ResponseEntity
+            .status(HttpStatus.NOT_ACCEPTABLE)
             .body(ErrorDTO(e.message))
     }
 }

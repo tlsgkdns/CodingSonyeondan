@@ -10,8 +10,8 @@ interface SongService {
     fun createSong(albumId: Long, songCreateDTO: SongCreateDTO): SongDTO
     fun updateSong(albumId: Long, songId: Long, songModifyDTO: SongUpdateDTO): SongDTO
     fun deleteSong(albumId: Long, songId: Long)
+    fun deleteSongs(albumId: Long)
     fun getSong(albumId: Long, songId: Long): SongDTO?
     fun getSongs(albumId: Long): List<SongDTO>
-
 
 }

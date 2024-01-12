@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository
 import java.util.*
 
 interface SongRepository : JpaRepository<Song, Long> {
-    fun existsByTitle(title: String): Boolean
     fun findByAlbumId(albumId: Long): List<Song>
     fun findByAlbumIdAndId(albumId: Long, songId: Long): Song?
 
+    fun deleteByAlbumId(album: Long)
 }

@@ -1,23 +1,30 @@
 package com.example.codingsonyeondan.domain.comment.model
 
+import com.example.codingsonyeondan.domain.album.model.Album
 import com.example.codingsonyeondan.domain.comment.dto.CommentResponse
+import com.example.codingsonyeondan.domain.member.model.Member
 import jakarta.persistence.*
+import org.hibernate.annotations.OnDelete
+import org.hibernate.annotations.OnDeleteAction
 import java.time.LocalDateTime
 
 @Entity
 @Table(name = "comment")
 data class Comment (
-        @Column(name = "albumId")
-        val albumId: Long?,
+        @ManyToOne
+        @JoinColumn(name = "album")
+        @OnDelete(action = OnDeleteAction.CASCADE)
+        val album: Album?,
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        val commentId: Long? = null,
+        val id: Long? = null,
         @Column(name = "content")
-        var content: String
+        var content: String,
+        @ManyToOne
+        @JoinColumn(name = "writer")
+        var writer: Member
 ) {
         fun toResponse():CommentResponse {
-                return CommentResponse(albumId, commentId, content )
-
-                //comment를 commentResponse로 바꾸기
+                return CommentResponse(album?.id, id, content )
         }
 }

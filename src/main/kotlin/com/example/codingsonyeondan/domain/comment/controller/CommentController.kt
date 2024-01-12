@@ -7,6 +7,7 @@ import com.example.codingsonyeondan.domain.comment.service.CommentService
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -22,7 +23,7 @@ class CommentController (
     private val commentService: CommentService
 ) {
 
-    @GetMapping()
+    @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getCommentList(@PathVariable albumId:Long) : ResponseEntity<List<CommentResponse>>{
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -36,28 +37,28 @@ class CommentController (
         return ResponseEntity.status(HttpStatus.OK)
                 .body(commentService.getComment(albumId,commentId))
     }
-
+    @PreAuthorize("hasAuthority('USER')")
     @PostMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
     fun createComment (@PathVariable albumId: Long,
                       @RequestBody createCommentDTO : CreateCommentDTO): ResponseEntity<CommentResponse> {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(commentService.createComment(albumId,createCommentDTO))
     }
-
-    @PutMapping("/{commentId}")
+    @PreAuthorize("hasAuthority('USER')")
+    @PutMapping("/{commentId}", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun updateComment (@PathVariable albumId:Long,
                        @PathVariable commentId: Long,
-                       @RequestBody updateCommentDTO : UpdateCommentDTO) : ResponseEntity<CommentResponse>{
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(commentService.updateComment(albumId, updateCommentDTO))
-        }
-
-
-    @DeleteMapping("/{commentId}")
+                       @RequestBody updateCommentDTO : UpdateCommentDTO) : ResponseEntity<CommentResponse> {
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(commentService.updateComment(albumId, commentId, updateCommentDTO))
+    }
+    @PreAuthorize("hasAuthority('USER')")
+    @DeleteMapping("/{commentId}", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun deleteComment(@PathVariable commentId:Long, @PathVariable albumId : Long): ResponseEntity<Unit>
-    {commentService.deleteComment(commentId)
-    return ResponseEntity
+    {
+        commentService.deleteComments(commentId)
+        return ResponseEntity
             .status(HttpStatus.NO_CONTENT)
             .build()
     }

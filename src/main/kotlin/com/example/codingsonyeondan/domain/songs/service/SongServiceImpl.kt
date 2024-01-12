@@ -23,10 +23,7 @@ class SongServiceImpl(
     private fun getValidateSong(songId: Long): Song {
         return songRepository.findByIdOrNull(songId) ?: throw ModelNotFoundException("Song", songId.toString())
     }
-    private fun checkTitleIsAlreadyExist(title: String) {
-        if(songRepository.existsByTitle(title))
-            throw UniqueAttributeAlreadyExistException("song", "title", title)
-    }
+
     override fun getSong(albumId: Long, songId: Long): SongDTO? {
         return songRepository.findByAlbumIdAndId(albumId, songId)?.let { SongDTO.from(it) }
     }
@@ -37,8 +34,6 @@ class SongServiceImpl(
     override fun createSong(albumId: Long, songCreateDTO: SongCreateDTO): SongDTO {
         val album = albumRepository.findById(albumId)
             .orElseThrow { throw IllegalArgumentException("존재하지 않는 앨범입니다.") }
-
-        checkTitleIsAlreadyExist(songCreateDTO.title)
         return SongDTO.from(songRepository.save(
             Song(
                 title = songCreateDTO.title,
@@ -60,9 +55,11 @@ class SongServiceImpl(
     }
     @Transactional
     override fun deleteSong(albumId: Long, songId: Long) {
-        println(getValidateSong(songId).title)
         return songRepository.delete(getValidateSong(songId))
     }
 
-
+    @Transactional
+    override fun deleteSongs(albumId: Long) {
+        return songRepository.deleteByAlbumId(albumId)
+    }
 }

@@ -8,9 +8,10 @@ interface CommentService {
 
     fun createComment (albumId: Long, request: CreateCommentDTO) : CommentResponse
 
-    fun updateComment (commentId:Long, request: UpdateCommentDTO) : CommentResponse
+    fun updateComment (albumId: Long, commentId:Long, request: UpdateCommentDTO) : CommentResponse
 
-    fun deleteComment(commentId:Long)
+    fun deleteComment(albumId: Long, commentId: Long)
+    fun deleteComments(albumId:Long)
 
     fun getCommentList(albumId:Long) : List<CommentResponse>
 

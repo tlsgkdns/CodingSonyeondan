@@ -4,5 +4,5 @@ import com.example.codingsonyeondan.domain.album.model.Album
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface AlbumRepository: JpaRepository<Album, Long> {
-    fun existsByTitle(title: String): Boolean
+
 }

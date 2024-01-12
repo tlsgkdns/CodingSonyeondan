@@ -8,18 +8,13 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.security.access.prepost.PreAuthorize
 
 @RestController
 
 @RequestMapping("/album")
 class SongController(private val songService: SongService) {
-
-    @PostMapping("/{albumId}/song", produces = [MediaType.APPLICATION_JSON_VALUE])
-    fun createSong(@PathVariable albumId: Long, @RequestBody songCreateDTO: SongCreateDTO): ResponseEntity<SongCreateDTO> {
-        songService.createSong(albumId, songCreateDTO)
-        return ResponseEntity.ok(songCreateDTO)
-    }
-
+    @PreAuthorize("hasAuthority('USER')")
     @PutMapping("/{albumId}/song/{songId}",produces = [MediaType.APPLICATION_JSON_VALUE])
     fun updateSong(@PathVariable albumId: Long, @PathVariable songId: Long, @RequestBody songUpdateDTO: SongUpdateDTO): ResponseEntity<out Any> {
         val song = songService.getSong(albumId, songId)
@@ -30,7 +25,7 @@ class SongController(private val songService: SongService) {
             ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("message" to "존재하지 않는 곡입니다."))
         }
     }
-
+    @PreAuthorize("hasAuthority('USER')")
     @DeleteMapping("/{albumId}/song/{songId}", produces = [MediaType.TEXT_PLAIN_VALUE])
     fun deleteSong(@PathVariable albumId: Long, @PathVariable songId: Long): ResponseEntity<out Any> {
         val song = songService.getSong(albumId, songId)
