@@ -22,8 +22,11 @@ data class Song(
 
     @Column(name = "lyrics")
     var lyrics: String,
+
     @Column(name = "link")
     var link: String,
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "album")
     @OnDelete(action = OnDeleteAction.CASCADE)
