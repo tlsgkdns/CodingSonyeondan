@@ -37,7 +37,7 @@ class AlbumServiceImpl(
     }
 
     override fun getAlbum(albumId: Long): AlbumDTO {
-        return AlbumDTO.from(getValidateAlbum(albumId));
+        return AlbumDTO.from(getValidateAlbum(albumId), songService);
     }
     @Transactional
     override fun createAlbum(albumCreateDTO: AlbumCreateDTO, imageFile: MultipartFile?, songList: SongCreateListDTO): AlbumDTO {
@@ -49,7 +49,7 @@ class AlbumServiceImpl(
             creator = SecurityUtil.getLoginMember(memberRepository)
         ))
         songList.songs.map { songService.createSong(album.id!!, it) }
-        return AlbumDTO.from(album)
+        return AlbumDTO.from(album, songService)
     }
     @Transactional
     override fun modifyAlbum(albumId: Long, imageFile: MultipartFile?, albumModifyDTO: AlbumModifyDTO): AlbumDTO {
@@ -62,7 +62,7 @@ class AlbumServiceImpl(
                                     imageService.uploadImage(UploadFileDTO(it)).to() }
                 ?: albumImage
             ,album.creator
-            )))
+            )), songService)
     }
     @Transactional
     override fun deleteAlbum(albumId: Long) {

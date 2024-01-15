@@ -49,6 +49,7 @@ class CommentServiceImpl (
         return commentRepository.save(comment).toResponse()
     }
 
+    @Transactional
     override fun deleteComment (albumId: Long, commentId:Long){
         val comment = commentRepository.findByIdOrNull(commentId)
             ?: throw ModelNotFoundException ("Comment",commentId.toString())
@@ -56,6 +57,7 @@ class CommentServiceImpl (
         SecurityUtil.checkUserCanAccessThis(comment.writer, "Comment")
         commentRepository.delete(comment)
     }
+    @Transactional
     override fun deleteComments (albumId:Long){
         commentRepository.deleteByAlbumId(albumId)
     }

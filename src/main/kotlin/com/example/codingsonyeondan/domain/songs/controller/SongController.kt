@@ -2,6 +2,7 @@ package com.example.codingsonyeondan.domain.songs.controller
 
 import com.example.codingsonyeondan.domain.songs.Song
 import com.example.codingsonyeondan.domain.songs.dto.SongCreateDTO
+import com.example.codingsonyeondan.domain.songs.dto.SongDTO
 import com.example.codingsonyeondan.domain.songs.dto.SongUpdateDTO
 import com.example.codingsonyeondan.domain.songs.service.SongService
 import io.swagger.v3.oas.annotations.Operation
@@ -17,6 +18,16 @@ import org.springframework.security.access.prepost.PreAuthorize
 @Tag(name = "Song", description = "곡 API")
 @RequestMapping("/album")
 class SongController(private val songService: SongService) {
+    @PreAuthorize("hasAuthority('USER')")
+    @Operation(summary = "곡 추가", description = "주어진 앨범 ID에 곡을 추가합니다.")
+    @PostMapping("/{albumId}/song",produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun createSong(
+        @Parameter(description = "앨범 ID") @PathVariable albumId: Long,
+        @Parameter(description = "추가할 곡 정보") @RequestBody songCreateDTO: SongCreateDTO
+    ): ResponseEntity<SongDTO> {
+        return ResponseEntity.status(HttpStatus.OK)
+            .body(songService.createSong(albumId, songCreateDTO))
+    }
     @PreAuthorize("hasAuthority('USER')")
     @Operation(summary = "곡 정보 업데이트", description = "주어진 앨범 ID와 곡 ID에 해당하는 곡의 정보를 업데이트합니다.")
     @PutMapping("/{albumId}/song/{songId}",produces = [MediaType.APPLICATION_JSON_VALUE])
