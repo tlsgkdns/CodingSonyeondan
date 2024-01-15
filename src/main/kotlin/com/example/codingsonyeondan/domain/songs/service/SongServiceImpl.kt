@@ -2,60 +2,64 @@ package com.example.codingsonyeondan.domain.songs.service
 
 import com.example.codingsonyeondan.domain.album.repository.AlbumRepository
 import com.example.codingsonyeondan.domain.songs.Song
+import com.example.codingsonyeondan.domain.songs.dto.SongCreateDTO
+import com.example.codingsonyeondan.domain.songs.dto.SongDTO
+import com.example.codingsonyeondan.domain.songs.dto.SongUpdateDTO
+
 import com.example.codingsonyeondan.domain.songs.repository.SongRepository
+import com.example.codingsonyeondan.infra.exception.ModelNotFoundException
+import com.example.codingsonyeondan.infra.exception.UniqueAttributeAlreadyExistException
+import jakarta.transaction.Transactional
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
+
 @Service
-class SongServiceImpl(private val songRepository: SongRepository, private val albumRepository: AlbumRepository) :
-    SongService {
+class SongServiceImpl(
+    private val songRepository: SongRepository,
+    private val albumRepository: AlbumRepository
+): SongService {
 
-    override fun createSong(albumId: Long, song: Song): Song {
-        val album = albumRepository.findById(albumId)
-        return album.map {
-            song.album = it
-            songRepository.save(song)
-        }.orElseThrow { RuntimeException("Album not found") }
+    private fun getValidateSong(songId: Long): Song {
+        return songRepository.findByIdOrNull(songId) ?: throw ModelNotFoundException("Song", songId.toString())
     }
 
-    override fun updateSong(albumId: Long, songId: Long, song: Song): Song {
-        val album = albumRepository.findById(albumId)
-        return album.map { album ->
-            val existingSong = songRepository.findById(songId)
-            existingSong.map {
-                it.composer = song.composer
-                it.lyrics = song.lyrics
-                it.link = song.link
-                it.album = album
-                songRepository.save(it)
-            }.orElseThrow { RuntimeException("Song not found") }
-        }.orElseThrow { RuntimeException("Album not found") }
+    override fun getSong(albumId: Long, songId: Long): SongDTO? {
+        return songRepository.findByAlbumIdAndId(albumId, songId)?.let { SongDTO.from(it) }
     }
-
+    override fun getSongs(albumId: Long): List<SongDTO> {
+        return songRepository.findByAlbumId(albumId).map { SongDTO.from(it) }
+    }
+    @Transactional
+    override fun createSong(albumId: Long, songCreateDTO: SongCreateDTO): SongDTO {
+        val album = albumRepository.findById(albumId)
+            .orElseThrow { throw IllegalArgumentException("존재하지 않는 앨범입니다.") }
+        return SongDTO.from(songRepository.save(
+            Song(
+                title = songCreateDTO.title,
+                composer = songCreateDTO.composer,
+                lyrics = songCreateDTO.lyrics,
+                link = songCreateDTO.link,
+                album = album
+            )
+        ))
+    }
+    override fun updateSong(albumId: Long, songId: Long, songModifyDTO: SongUpdateDTO): SongDTO {
+        val song = songRepository.findById(songId).orElseThrow { NoSuchElementException("곡을 찾을 수 없습니다.") }
+        song.title = songModifyDTO.title
+        song.composer = songModifyDTO.composer
+        song.lyrics = songModifyDTO.lyrics
+        song.link = songModifyDTO.link
+        songRepository.save(song)
+        return Song.toDto(song)
+    }
+    @Transactional
     override fun deleteSong(albumId: Long, songId: Long) {
-        val album = albumRepository.findById(albumId)
-        album.ifPresent {
-            val song = songRepository.findById(songId)
-            song.ifPresent {
-                songRepository.delete(it)
-            }
-        }
+        return songRepository.delete(getValidateSong(songId))
     }
 
-    override fun getSong(albumId: Long, songId: Long): Song? {
-        val album = albumRepository.findById(albumId)
-        if (album.isPresent) {
-            val song = songRepository.findById(songId)
-            return song.orElse(null)
-        }
-        return null
-    }
-
-    override fun getSongs(albumId: Long): List<Song> {
-        val album = albumRepository.findById(albumId)
-        return if (album.isPresent) {
-            songRepository.findAllByAlbum(album.get())
-        } else {
-            emptyList()
-        }
+    @Transactional
+    override fun deleteSongs(albumId: Long) {
+        return songRepository.deleteByAlbumId(albumId)
     }
 }
