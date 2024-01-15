@@ -68,7 +68,7 @@ class CommentController (
         @Parameter(description = "삭제할 댓글의 ID") @PathVariable commentId: Long,
         @Parameter(description = "댓글을 삭제할 앨범의 ID") @PathVariable albumId: Long
     ): ResponseEntity<Unit> {
-        commentService.deleteComments(commentId)
+        commentService.deleteComment(albumId, commentId)
         return ResponseEntity
             .status(HttpStatus.NO_CONTENT)
             .build()
